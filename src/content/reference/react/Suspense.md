@@ -4,7 +4,7 @@ title: <Suspense>
 
 <Intro>
 
-`<Suspense>` lets you display a fallback until its children have finished loading.
+`<Suspense>` cho phép bạn hiển thị một phần thay thế cho đến khi các phần con của nó hoàn thành quá trình tải.
 
 
 ```js
@@ -19,28 +19,29 @@ title: <Suspense>
 
 ---
 
-## Reference {/*reference*/}
+## Tham khảo {/*reference*/}
 
 ### `<Suspense>` {/*suspense*/}
 
 #### Props {/*props*/}
-* `children`: The actual UI you intend to render. If `children` suspends while rendering, the Suspense boundary will switch to rendering `fallback`.
-* `fallback`: An alternate UI to render in place of the actual UI if it has not finished loading. Any valid React node is accepted, though in practice, a fallback is a lightweight placeholder view, such as a loading spinner or skeleton. Suspense will automatically switch to `fallback` when `children` suspends, and back to `children` when the data is ready. If `fallback` suspends while rendering, it will activate the closest parent Suspense boundary.
+* `children`: Giao diện người dùng thực tế mà bạn muốn hiển thị. Nếu `children` tạm hoãn trong quá trình hiển thị, ranh giới Suspense sẽ chuyển sang hiển thị `fallback`.
+* `fallback`: Một giao diện người dùng thay thế để hiển thị thay thế cho giao diện người dùng thực tế nếu nó chưa hoàn thành quá trình tải. Bất kỳ đối tượng React hợp lệ nào cũng được chấp nhận, tuy nhiên trong thực tế, phần thay thế thường là một lightweight placeholder, như một loading spinner hoặc skeleton. Suspense sẽ tự động chuyển sang `fallback` khi `children` bị tạm hoãn và chuyển lại `children` khi dữ liệu đã sẵn sàng. Nếu `fallback` bị tạm hoãn trong quá trình hiển thị, nó sẽ kích hoạt ranh giới Suspense cha gần nhất.
 
-#### Caveats {/*caveats*/}
 
-- React does not preserve any state for renders that got suspended before they were able to mount for the first time. When the component has loaded, React will retry rendering the suspended tree from scratch.
-- If Suspense was displaying content for the tree, but then it suspended again, the `fallback` will be shown again unless the update causing it was caused by [`startTransition`](/reference/react/startTransition) or [`useDeferredValue`](/reference/react/useDeferredValue).
-- If React needs to hide the already visible content because it suspended again, it will clean up [layout Effects](/reference/react/useLayoutEffect) in the content tree. When the content is ready to be shown again, React will fire the layout Effects again. This ensures that Effects measuring the DOM layout don't try to do this while the content is hidden.
-- React includes under-the-hood optimizations like *Streaming Server Rendering* and *Selective Hydration* that are integrated with Suspense. Read [an architectural overview](https://github.com/reactwg/react-18/discussions/37) and watch [a technical talk](https://www.youtube.com/watch?v=pj5N-Khihgc) to learn more.
+#### Những lưu ý {/*caveats*/}
+
+- React không duy trì bất kỳ state cho những lần renders bị tạm hoãn trước khi chúng được mount lần đầu. Khi các thành phần đã tải xong, React sẽ thử lại quá trình render suspended tree từ đầu.
+- Nếu Suspense đã hiển thị nội dung cho cây, nhưng sau đó lại bị tạm hoãn một lần nữa, `fallback` sẽ được hiển thị lại trừ khi việc cập nhật gây ra điều này là do [`startTransition`](/reference/react/startTransition) hoặc [`useDeferredValue`](/reference/react/useDeferredValue) gây ra.
+- Nếu mà React cần ẩn những nội dung đã hiển thị vì cần tạm hoãn lần nữa, nó sẽ dọn dẹp [layout Effects](/reference/react/useLayoutEffect) trong cây nội dung. Khi mà nội dung sẵn sàng để hiển thị lần nữa, React sẽ chạy lại layout Effects. Điều này sẽ đảm bảo rằng Effects đã tính toán DOM layout. Đừng thử điều này khi mà content bị ẩn.
+- React bao gồm những tối ưu hoá "ngầm" như *Streaming Server Rendering* và *Selective Hydration* được tích hợp với Suspense. Để biết thêm chi tiết hãy đọc [an architectural overview](https://github.com/reactwg/react-18/discussions/37) và xem [a technical talk](https://www.youtube.com/watch?v=pj5N-Khihgc).
 
 ---
 
-## Usage {/*usage*/}
+## Cách sử dụng {/*usage*/}
 
-### Displaying a fallback while content is loading {/*displaying-a-fallback-while-content-is-loading*/}
+### Hiển thị nội dung thay thế trong khi nội dung đang được tải {/*displaying-a-fallback-while-content-is-loading*/}
 
-You can wrap any part of your application with a Suspense boundary:
+Bạn có thể bao bọc bất kỳ phần nào của ứng dụng của bạn bằng một ranh giới Suspense:
 
 ```js [[1, 1, "<Loading />"], [2, 2, "<Albums />"]]
 <Suspense fallback={<Loading />}>
@@ -48,9 +49,11 @@ You can wrap any part of your application with a Suspense boundary:
 </Suspense>
 ```
 
-React will display your <CodeStep step={1}>loading fallback</CodeStep> until all the code and data needed by <CodeStep step={2}>the children</CodeStep> has been loaded.
+React sẽ hiển thị <CodeStep step={1}>loading fallback</CodeStep> cho đến khi tất cả code và dữ liệu sẵn sàng cho <CodeStep step={2}>the children</CodeStep> đã được tải xong.
 
 In the example below, the `Albums` component *suspends* while fetching the list of albums. Until it's ready to render, React switches the closest Suspense boundary above to show the fallback--your `Loading` component. Then, when the data loads, React hides the `Loading` fallback and renders the `Albums` component with data.
+
+Ở ví dụ dưới đây, component `Albums`  *tạm ngừng (suspend)* trong quá trình tải danh sách album. Cho đến khi nó sẵn sàng để render, React chuyển đổi ranh giớ Suspense gần nhất ở phía trên để hiển thị phần thay thế, đó là component `Loading` của bạn. Sau đó, khi dữ liệu được tải, React ẩn đi phần thay thế `Loading` và hiển thị component `Albums` với dữ liệu.
 
 <Sandpack>
 
