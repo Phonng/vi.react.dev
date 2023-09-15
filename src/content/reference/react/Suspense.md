@@ -24,8 +24,8 @@ title: <Suspense>
 ### `<Suspense>` {/*suspense*/}
 
 #### Props {/*props*/}
-* `children`: Giao diện người dùng thực tế mà bạn muốn hiển thị. Nếu `children` tạm hoãn trong quá trình hiển thị, ranh giới Suspense sẽ chuyển sang hiển thị `fallback`.
-* `fallback`: Một giao diện người dùng thay thế để hiển thị thay thế cho giao diện người dùng thực tế nếu nó chưa hoàn thành quá trình tải. Bất kỳ đối tượng React hợp lệ nào cũng được chấp nhận, tuy nhiên trong thực tế, phần thay thế thường là một lightweight placeholder, như một loading spinner hoặc skeleton. Suspense sẽ tự động chuyển sang `fallback` khi `children` bị tạm hoãn và chuyển lại `children` khi dữ liệu đã sẵn sàng. Nếu `fallback` bị tạm hoãn trong quá trình hiển thị, nó sẽ kích hoạt ranh giới Suspense cha gần nhất.
+* `children`: Giao diện người dùng thực tế mà bạn muốn hiển thị. Nếu `children` tạm hoãn trong quá trình hiển thị, Suspense boundary sẽ chuyển sang hiển thị `fallback`.
+* `fallback`: Một giao diện người dùng thay thế để hiển thị thay thế cho giao diện người dùng thực tế nếu nó chưa hoàn thành quá trình tải. Bất kỳ đối tượng React hợp lệ nào cũng được chấp nhận, tuy nhiên trong thực tế, phần thay thế thường là một lightweight placeholder, như một loading spinner hoặc skeleton. Suspense sẽ tự động chuyển sang `fallback` khi `children` bị tạm hoãn và chuyển lại `children` khi dữ liệu đã sẵn sàng. Nếu `fallback` bị tạm hoãn trong quá trình hiển thị, nó sẽ kích hoạt Suspense boundary cha gần nhất.
 
 
 #### Những lưu ý {/*caveats*/}
@@ -41,7 +41,7 @@ title: <Suspense>
 
 ### Hiển thị nội dung thay thế trong khi nội dung đang được tải {/*displaying-a-fallback-while-content-is-loading*/}
 
-Bạn có thể bao bọc bất kỳ phần nào của ứng dụng của bạn bằng một ranh giới Suspense:
+Bạn có thể bao bọc bất kỳ phần nào của ứng dụng của bạn bằng một Suspense boundary:
 
 ```js [[1, 1, "<Loading />"], [2, 2, "<Albums />"]]
 <Suspense fallback={<Loading />}>
@@ -51,9 +51,7 @@ Bạn có thể bao bọc bất kỳ phần nào của ứng dụng của bạn 
 
 React sẽ hiển thị <CodeStep step={1}>loading fallback</CodeStep> cho đến khi tất cả code và dữ liệu sẵn sàng cho <CodeStep step={2}>the children</CodeStep> đã được tải xong.
 
-In the example below, the `Albums` component *suspends* while fetching the list of albums. Until it's ready to render, React switches the closest Suspense boundary above to show the fallback--your `Loading` component. Then, when the data loads, React hides the `Loading` fallback and renders the `Albums` component with data.
-
-Ở ví dụ dưới đây, component `Albums`  *tạm ngừng (suspend)* trong quá trình tải danh sách album. Cho đến khi nó sẵn sàng để render, React chuyển đổi ranh giớ Suspense gần nhất ở phía trên để hiển thị phần thay thế, đó là component `Loading` của bạn. Sau đó, khi dữ liệu được tải, React ẩn đi phần thay thế `Loading` và hiển thị component `Albums` với dữ liệu.
+Ở ví dụ dưới đây, component `Albums`  *tạm ngừng (suspend)* trong quá trình tải danh sách album. Cho đến khi nó sẵn sàng để render, React chuyển đổi Suspense boundary gần nhất ở phía trên để hiển thị phần thay thế, đó là component `Loading` của bạn. Sau đó, khi dữ liệu được tải, React ẩn đi phần thay thế `Loading` và hiển thị component `Albums` với dữ liệu.
 
 <Sandpack>
 
@@ -253,16 +251,16 @@ async function getAlbums() {
 
 <Note>
 
-**Only Suspense-enabled data sources will activate the Suspense component.** They include:
+**Chỉ các nguồn dữ liệu hỗ trợ Suspense mới sẽ kích hoạt thành phần Suspense.** Bao gồm:
 
-- Data fetching with Suspense-enabled frameworks like [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) and [Next.js](https://nextjs.org/docs/getting-started/react-essentials)
-- Lazy-loading component code with [`lazy`](/reference/react/lazy)
+- Tải dữ liệu bằng các framework hỗ trợ Suspense như [Relay](https://relay.dev/docs/guided-tour/rendering/loading-states/) và [Next.js](https://nextjs.org/docs/getting-started/react-essentials)
+- Lazy-loading component code với [`lazy`](/reference/react/lazy)
 
-Suspense **does not** detect when data is fetched inside an Effect or event handler.
+Suspense **không** phát hiện khi dữ liệu được tải trong Effect hoặc xử lý sự kiện.
 
-The exact way you would load data in the `Albums` component above depends on your framework. If you use a Suspense-enabled framework, you'll find the details in its data fetching documentation.
+Cách chính xác để load dữ liệu trong `Albums` component ở trên phụ thuộc vào framework của bạn. Nếu bạn sử dụng framework hỗ trợ Suspense, bạn sẽ tìm thấy chi tiết trong tìa liệu.
 
-Suspense-enabled data fetching without the use of an opinionated framework is not yet supported. The requirements for implementing a Suspense-enabled data source are unstable and undocumented. An official API for integrating data sources with Suspense will be released in a future version of React. 
+Việc tải dữ liệu bằng Suspense mà không dùng một opinionated framework chưa được hỗ trợ. Việc yêu cầu áp dụng một nguồn dữ liệu hỗ trợ Suspense chưa ổn định và chưa có tài liệu hướng dẫn. Một API chính thức cho việc tích hợp nguồn dữ liệu với Suspense sẽ được phát hành trong phiên bản React tương lai.
 
 </Note>
 
