@@ -266,9 +266,9 @@ Việc tải dữ liệu bằng Suspense mà không dùng một opinionated fram
 
 ---
 
-### Revealing content together at once {/*revealing-content-together-at-once*/}
+### Hiển thị tất cả nội dung cùng lúc {/*revealing-content-together-at-once*/}
 
-By default, the whole tree inside Suspense is treated as a single unit. For example, even if *only one* of these components suspends waiting for some data, *all* of them together will be replaced by the loading indicator:
+Mặc định, toàn bộ cây bên trong Suspense được coi là một đơn vị. Ví dụ, ngay cả khi *chỉ có một* trong những thành phần tạm ngừng để đợi dữ liệu, *tất cả* sẽ được thay bởi “chỉ thị tải” (loading indicator):
 
 ```js {2-5}
 <Suspense fallback={<Loading />}>
@@ -279,9 +279,9 @@ By default, the whole tree inside Suspense is treated as a single unit. For exam
 </Suspense>
 ```
 
-Then, after all of them are ready to be displayed, they will all appear together at once.
+Sau đó, khi tất cả đã sẵn sàng để hiển thị, chúng sẽ xuất hiện cùng một lúc.
 
-In the example below, both `Biography` and `Albums` fetch some data. However, because they are grouped under a single Suspense boundary, these components always "pop in" together at the same time.
+Trong ví dụ trên, cả `Biography` và `Albums` đề tải dữ liệu. Tuy nhiên, vì chúng được gộp lại dưới 1 Suspense boundary, những components sẽ luôn "xuất hiện" cùng một lúc.
 
 <Sandpack>
 
@@ -563,7 +563,7 @@ async function getAlbums() {
 
 </Sandpack>
 
-Components that load data don't have to be direct children of the Suspense boundary. For example, you can move `Biography` and `Albums` into a new `Details` component. This doesn't change the behavior. `Biography` and `Albums` share the same closest parent Suspense boundary, so their reveal is coordinated together.
+Các Components tải dữ liệu không cần phải là con trực tiếp của Suspense boundary. Ví dụ, bạn có thể di chuyển `Biography` và `Albums` vào một component `Details` mới. Điều này không thay đổi cách hoạt động của chúng. `Biography` và `Albums` chia sẻ cùng một Suspense boundary cha gần nhất, nên việc hiển thị chúng được cùng nhau.
 
 ```js {2,8-11}
 <Suspense fallback={<Loading />}>
@@ -586,7 +586,7 @@ function Details({ artistId }) {
 
 ### Revealing nested content as it loads {/*revealing-nested-content-as-it-loads*/}
 
-When a component suspends, the closest parent Suspense component shows the fallback. This lets you nest multiple Suspense components to create a loading sequence. Each Suspense boundary's fallback will be filled in as the next level of content becomes available. For example, you can give the album list its own fallback:
+Khi một component tạm ngừng, component cha Suspense gần nhất sẽ hiển thị fallback. Điều này cho phép bạn lồng ghép nhiều Suspense components vào nhau để tạo ra một trình tự tải dữ liệu. Suspense boundary's fallback sẽ được hiển thị trong lúc nội dung cấp độ tiếp theo đang được tải. Ví dụ, bạn có thể tạo fallback riêng cho danh sách album:
 
 ```js {3,7}
 <Suspense fallback={<BigSpinner />}>
